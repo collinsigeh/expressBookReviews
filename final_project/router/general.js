@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
@@ -27,6 +28,24 @@ public_users.post("/register", (req, res) => {
   return res.status(201).json({
     message: "User registered successfully"
   });
+});
+
+
+ // Get the list of books using Axios and async/await
+public_users.get('/books/async', async (req, res) => {
+  try {
+    const response = await axios.get('http://localhost:5000/');
+
+    return res.status(200)
+      .type('json')
+      .send(JSON.stringify(response.data, null, 2));
+
+  } catch (error) {
+    return res.status(502).json({
+      message: "Unable to fetch the book list",
+      error: error.message
+    });
+  }
 });
 
 
