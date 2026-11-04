@@ -170,4 +170,33 @@ public_users.get('/review/:isbn', function (req, res) {
 });
 
 
+
+ // Get book details by title using Axios and async/await
+public_users.get('/title/async/:title', async (req, res) => {
+  const title = req.params.title;
+
+  try {
+    const response = await axios.get(
+      `http://localhost:5000/title/${encodeURIComponent(title)}`
+    );
+
+    return res.status(200)
+      .type('json')
+      .send(JSON.stringify(response.data, null, 2));
+
+  } catch (error) {
+    if (error.response?.status === 404) {
+      return res.status(404).json({
+        message: "No books found with this title"
+      });
+    }
+
+    return res.status(502).json({
+      message: "Unable to fetch books by title",
+      error: error.message
+    });
+  }
+});
+
+
 module.exports.general = public_users;
